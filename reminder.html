@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Health Assistant Reminder</title>
+   <style>
+       body {
+           font-family: Arial, sans-serif;
+           margin: 0;
+           padding: 0;
+           background-color: #f4f4f4;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           height: 100vh;
+       }
+
+       .container {
+           max-width: 800px;
+           background-color: #fff;
+           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+           padding: 20px;
+           border-radius: 5px;
+       }
+
+       input[type="text"],
+       input[type="email"],
+       input[type="datetime-local"] {
+           width: 100%;
+           padding: 10px;
+           margin-bottom: 15px;
+           border: 1px solid #ccc;
+           border-radius: 4px;
+           box-sizing: border-box;
+       }
+
+       input[type="submit"] {
+           background-color: #4caf50;
+           color: #fff;
+           padding: 12px 20px;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+       }
+
+       .reminder-item {
+           background-color: #f9f9f9;
+           padding: 10px;
+           margin-bottom: 10px;
+           border-radius: 4px;
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+       }
+
+       .reminder-item button {
+           background-color: #f44336;
+           color: white;
+           padding: 8px;
+           border: none;
+           border-radius: 4px;
+           cursor: pointer;
+       }
+   </style>
+</head>
+<body>
+
+<div class="container">
+   <h1 style="text-align: center; color: #333;">Health Assistant Reminder</h1>
+
+   <ul id="reminderList" style="list-style: none; padding: 0;">
+       <!-- Predefined reminders will be added dynamically using JavaScript -->
+   </ul>
+
+   <form id="customReminderForm" style="margin-top: 20px;">
+       <label for="customReminder">Custom Reminder:</label>
+       <input type="text" id="customReminder" placeholder="Enter your reminder">
+       <label for="datetime">Date and Time:</label>
+       <input type="datetime-local" id="datetime" placeholder="Select date and time">
+       <input type="submit" value="Set Reminder">
+   </form>
+</div>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+       // Predefined reminders
+       const predefinedReminders = ['Drink water', 'Take medicine', 'Consult a doctor'];
+
+       // Function to create a reminder item
+       function createReminderItem(text, email, datetime) {
+           const listItem = document.createElement('li');
+           listItem.className = 'reminder-item';
+           listItem.innerHTML = `
+               <span>${text}</span> 
+               <span>Date and Time: ${datetime}</span>
+               <button onclick="removeReminder(this)">Remove</button>
+           `;
+           return listItem;
+       }
+
+       // Display predefined reminders
+       const reminderList = document.getElementById('reminderList');
+       predefinedReminders.forEach(function (reminder) {
+           reminderList.appendChild(createReminderItem(reminder, '', ''));
+       });
+
+       // Event listener for custom reminder form
+       const customReminderForm = document.getElementById('customReminderForm');
+       customReminderForm.addEventListener('submit', function (event) {
+           event.preventDefault();
+           const customReminderInput = document.getElementById('customReminder');
+           const emailInput = document.getElementById('email');
+           const datetimeInput = document.getElementById('datetime');
+           const customReminderText = customReminderInput.value.trim();
+           const email = emailInput.value.trim();
+           const datetime = datetimeInput.value.trim();
+           if (customReminderText !== '' && email !== '' && datetime !== '') {
+               reminderList.appendChild(createReminderItem(customReminderText, email, datetime));
+               customReminderInput.value = '';
+               emailInput.value = '';
+               datetimeInput.value = '';
+               sendEmail(email, 'Reminder', Hello,\n\nThis is a reminder to ${customReminderText}.\n\nDate and Time: ${datetime}\n\nRegards,\nHealth Assistant);
+               storeUserActivity(email, customReminderText, datetime);
+           } else {
+               alert('Please enter both a reminder, an email address, and select a date and time.');
+           }
+       });
+   });
+
+   function removeReminder(button) {
+       const listItem = button.parentElement;
+       listItem.remove();
+   }    
+
+   function storeUserActivity(email, reminderText, datetime) {
+       // Implement logic to store user activity (email, reminderText, datetime) in a database or file
+       console.log(Storing user activity for ${email}: ${reminderText} on ${datetime});
+   }
+</script>
+
+</body>
+</html>
